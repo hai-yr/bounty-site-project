@@ -1,0 +1,28 @@
+version: 2.1
+orbs:
+  node: circleci/node@4.7.0
+jobs:
+  build:
+    docker:
+      - image: cimg/node:16.8.0
+    steps:
+      - checkout
+      - run: node --version
+      - run: curl -o- -L https://yarnpkg.com/install.sh | bash
+      - run: yarn -v
+      - run: yarn
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build:
+          context: OpenQ
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only:
+                - /^local*/
+                - /^development*/
+                - /^staging*/
+                - /^production*/

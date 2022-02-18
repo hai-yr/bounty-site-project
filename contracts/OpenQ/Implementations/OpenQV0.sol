@@ -122,24 +122,30 @@ contract OpenQV0 is
         return true;
     }
 
-    // joey did this:
-    // function selectWinner(address _funder, bytes32 _submittalId) external nonReentrant returns(address) {
-    //require(this.status() == BountyStatus.OPEN, 'CLAIMING_CLOSED_BOUNTY');
-    //require(!refunded[depositId], 'CLAIMING_REFUNDED_DEPOSIT');
-    //require(!claimed[depositId], 'CLAIMING_CLAIMED_DEPOSIT');
-    //require(msg.sender == address _funder);
-    //
-    // address _payoutAddress = submitter[_submittalId];
-    // return _payoutAddress;
-    // emit WinnerSelected(address _payoutAddress, address _funder, bounty.bountyId(), bountyAddress, block.timestamp);
+    function submitMethod(address _submitter)
+        external
+        nonReetrant
+        returns (bytes32)
+    {
+        require(bountyIsOpen(_bountyId) == true, 'SUBMISSIONS_CLOSED_BOUNTY');
+        bytes32 submissionId = _generateSubmissionId(_submitter);
+        submissionIdToAddress[submissionId] = _submitter;
+        submissions.push(msg.sender);
+        return submissionId;
+    }
 
-    //)
-    // }
-    // remove onlyOracle from below function
+    function selectWinner(address _funder, bytes32 submissionId) external nonReentrant returns(address) {
+        require(this.status() == BountyStatus.OPEN, 'CLAIMING_CLOSED_BOUNTY');
+        require(!refunded[depositId], 'CLAIMING_REFUNDED_DEPOSIT');
+        require(!claimed[depositId], 'CLAIMING_CLAIMED_DEPOSIT');
+        require(msg.sender == address _funder);
+        address _payoutAddress = submissionIdToAddress[submissionId];
+        return _payoutAddress;
+        emit WinnerSelected(address _payoutAddress, address _funder, bounty.bountyId(), bountyAddress, block.timestamp);
+    }
 
     function claimBounty(string calldata _bountyId, address closer)
         external
-        onlyOracle
         nonReentrant
     {
         require(bountyIsOpen(_bountyId) == true, 'CLAIMING_CLOSED_BOUNTY');

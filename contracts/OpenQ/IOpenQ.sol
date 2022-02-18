@@ -62,6 +62,15 @@ interface IOpenQ {
         uint256 payoutTime
     );
 
+    event WinnerSelected(
+        address _payoutAddress,
+        address _funder,
+        bounty.bountyId(),
+        bountyAddress,
+        block.timestamp
+
+    );
+
     function mintBounty(string calldata, string calldata)
         external
         returns (address);
@@ -81,6 +90,10 @@ interface IOpenQ {
     ) external payable returns (bool success);
 
     function claimBounty(string calldata, address) external;
+
+    function submitMethod(address) external returns(bytes32);
+
+    function selectWinner(address, bytes32) external returns (address);
 
     function refundDeposit(address, bytes32) external returns (bool);
 

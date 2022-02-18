@@ -44,7 +44,8 @@ abstract contract Bounty is
     mapping(bytes32 => uint256) public tokenId;
     mapping(bytes32 => uint256) public expiration;
     mapping(bytes32 => bool) public isNFT;
-    // mapping(bytes32 => address) public submitter; // would require limiting to one per address
+    mapping(bytes32 => address) public submissionIdToAddress;
+    address[] public submitters;
 
     // Deposit Count and IDs
     bytes32[] public deposits;
@@ -83,6 +84,10 @@ abstract contract Bounty is
         external
         virtual
         returns (bool success);
+
+    function selectWinner(address, bytes32) external virtual returns (address);
+
+    function refundDeposit(address, bytes32) external virtual returns (bool);
 
     function claim(address _payoutAddress, bytes32 depositId)
         external
@@ -158,6 +163,14 @@ abstract contract Bounty is
         returns (bytes32)
     {
         return keccak256(abi.encode(_sender, _tokenAddress, deposits.length));
+    }
+
+    function _generateSubmissionId(address _sender)
+        internal
+        view
+        returns (bytes32)
+    {
+        return keccak256(abi.encode(_sender, submissions.length));
     }
 
     function getERC20Balance(address _tokenAddress)

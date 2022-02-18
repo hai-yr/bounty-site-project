@@ -100,7 +100,7 @@ abstract contract Bounty is
         virtual
         returns (bool success);
 
-    function selectWinner(address _funder, bytes32 _submittalId)
+    function selectWinner(address _funder, uint256 _submittalId)
         external
         virtual
         returns (address _payoutAddress);

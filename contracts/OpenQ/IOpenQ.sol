@@ -68,7 +68,6 @@ interface IOpenQ {
         string bountyId,
         address indexed bountyAddress,
         uint256 selectionTime
-
     );
 
     function mintBounty(string calldata, string calldata)
@@ -91,11 +90,11 @@ interface IOpenQ {
 
     function claimBounty(string calldata, address) external;
 
-    function submitMethod(address) external returns(bytes32);
+    function submitMethod(string calldata, address) external returns (uint256);
 
     function selectWinner(address, bytes32) external returns (address);
 
-    function refundDeposit(address, bytes32) external returns (bool);
+    function refundDeposit(bytes32, address) external returns (bool);
 
     function bountyIsOpen(string memory) external view returns (bool);
 }

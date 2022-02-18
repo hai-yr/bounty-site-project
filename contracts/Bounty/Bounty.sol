@@ -44,7 +44,7 @@ abstract contract Bounty is
     mapping(bytes32 => uint256) public tokenId;
     mapping(bytes32 => uint256) public expiration;
     mapping(bytes32 => bool) public isNFT;
-    mapping(uint256 => address) public submissionIdToAddress;
+    mapping(bytes32 => address) public submissionIdToAddress;
     address[] public submitters;
 
     // Deposit Count and IDs
@@ -88,7 +88,7 @@ abstract contract Bounty is
     function submitMethod(string calldata _bountyId, address _submitter)
         external
         virtual
-        returns (uint256 submissionId);
+        returns (bytes32 submissionId);
 
     function claim(address _payoutAddress, bytes32 depositId)
         external
@@ -100,7 +100,7 @@ abstract contract Bounty is
         virtual
         returns (bool success);
 
-    function selectWinner(address _funder, uint256 _submittalId)
+    function selectWinner(address _funder, bytes32 _submittalId)
         external
         virtual
         returns (address _payoutAddress);

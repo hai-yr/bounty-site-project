@@ -125,15 +125,15 @@ contract OpenQV0 is
     function submitMethod(string calldata _bountyId, address _submitter)
         external
         nonReentrant
-        returns (uint256)
+        returns (bytes32)
     {
         require(bountyIsOpen(_bountyId) == true, 'SUBMISSIONS_CLOSED');
         address bountyAddress = bountyIdToAddress(_bountyId);
         Bounty bounty = Bounty(payable(bountyAddress));
-        uint256 submissionId = bounty._generateSubmissionId(_submitter);
-        bounty.submissionIdToAddress[submissionId] = _submitter;
+        address[] submitters = bounty.getSubmitters();
+        submitters.push(msg.sender);
+        //bounty.submissionIdToAddress[submissionId] = _submitter;
 
-        bounty.submitters.push(msg.sender);
         return submissionId;
     }
 

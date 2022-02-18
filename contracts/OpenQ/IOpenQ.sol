@@ -90,7 +90,7 @@ interface IOpenQ {
 
     function claimBounty(string calldata, address) external;
 
-    function submitMethod(string calldata, address) external returns (uint256);
+    function submitMethod(string calldata, address) external returns (bytes32);
 
     function selectWinner(address, bytes32) external returns (address);
 

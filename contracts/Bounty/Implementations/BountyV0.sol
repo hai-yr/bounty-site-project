@@ -119,10 +119,10 @@ contract BountyV0 is Bounty {
         override
         nonReentrant
         onlyOpenQ
-        returns (uint256)
+        returns (bytes32)
     {
         require(this.status() == BountyStatus.OPEN, 'SUBMISSIONS_CLOSED');
-        uint256 submissionId = _generateSubmissionId(_submitter);
+        bytes32 submissionId = _generateSubmissionId(_submitter);
         submissionIdToAddress[submissionId] = _submitter;
         submitters.push(msg.sender);
         return submissionId;

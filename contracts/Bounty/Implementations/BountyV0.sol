@@ -114,20 +114,28 @@ contract BountyV0 is Bounty {
         return true;
     }
 
-    // event WinnerSelected()
-    // joey did this:
-    // function selectWinner(address _funder, bytes32 _submittalId) external override onlyOpenQ nonReentrant returns(address) {
-    //require(this.status() == BountyStatus.OPEN, 'CLAIMING_CLOSED_BOUNTY');
-    //require(!refunded[depositId], 'CLAIMING_REFUNDED_DEPOSIT');
-    //require(!claimed[depositId], 'CLAIMING_CLAIMED_DEPOSIT');
-    //require(msg.sender == address _funder);
-    //
-    // address _payoutAddress = submitter[_submittalId];
-    // return _payoutAddress;
-    // emit WinnerSelected(address _payoutAddress, address _funder,
+    function submitMethod(address _submitter)
+        external
+        override
+        nonReetrant
+        onlyOpenQ
+        returns (bytes32)
+    {
+        require(bountyIsOpen(_bountyId) == true, 'SUBMISSIONS_CLOSED_BOUNTY');
+        bytes32 submissionId = _generateSubmissionId(_submitter);
+        submissionIdToAddress[submissionId] = _submitter;
+        submissions.push(msg.sender);
+        return submissionId;
+    }
 
-    //)
-    // }
+    function selectWinner(address _funder, bytes32 _submittalId) external override onlyOpenQ nonReentrant returns(address) {
+        require(this.status() == BountyStatus.OPEN, 'CLAIMING_CLOSED_BOUNTY');
+        require(!refunded[depositId], 'CLAIMING_REFUNDED_DEPOSIT');
+        require(!claimed[depositId], 'CLAIMING_CLAIMED_DEPOSIT');
+        require(msg.sender == address _funder);
+        address _payoutAddress = submitter[_submittalId];
+        return _payoutAddress;
+    }
 
     function claim(address _payoutAddress, bytes32 depositId)
         external

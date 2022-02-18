@@ -122,30 +122,39 @@ contract OpenQV0 is
         return true;
     }
 
-    function submitMethod(string _bountyId, address _submitter)
+    function submitMethod(string calldata _bountyId, address _submitter)
         external
         nonReentrant
         returns (bytes32)
     {
-        require(bountyIsOpen(_bountyId) == true, 'SUBMISSIONS_CLOSED_BOUNTY');
+        require(bountyIsOpen(_bountyId) == true, 'SUBMISSIONS_CLOSED');
         address bountyAddress = bountyIdToAddress(_bountyId);
         Bounty bounty = Bounty(payable(bountyAddress));
-        bytes32 submissionId = _generateSubmissionId(_submitter);
+        uint256 submissionId = bounty._generateSubmissionId(_submitter);
         bounty.submissionIdToAddress[submissionId] = _submitter;
-        submissions.push(msg.sender);
+
+        bounty.submitters.push(msg.sender);
         return submissionId;
     }
 
-    function selectWinner(address _funder, bytes32 submissionId, string calldata _bountyId) external nonReentrant returns(address) {
-        require(this.status() == BountyStatus.OPEN, 'CLAIMING_CLOSED_BOUNTY');
-        require(!refunded[depositId], 'CLAIMING_REFUNDED_DEPOSIT');
-        require(!claimed[depositId], 'CLAIMING_CLAIMED_DEPOSIT');
+    function selectWinner(
+        address _funder,
+        bytes32 submissionId,
+        string calldata _bountyId
+    ) external nonReentrant returns (address) {
+        require(bountyIsOpen(_bountyId) == true, 'JUDGING_CLOSED_BOUNTY');
         require(msg.sender == _funder);
         address bountyAddress = bountyIdToAddress(_bountyId);
         Bounty bounty = Bounty(payable(bountyAddress));
         address _payoutAddress = bounty.submissionIdToAddress[submissionId];
         return _payoutAddress;
-        emit WinnerSelected(_payoutAddress, _funder, bounty.bountyId(), bountyAddress, block.timestamp);
+        emit WinnerSelected(
+            _payoutAddress,
+            _funder,
+            bounty.bountyId(),
+            bountyAddress,
+            block.timestamp
+        );
     }
 
     function claimBounty(string calldata _bountyId, address closer)

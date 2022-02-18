@@ -44,7 +44,7 @@ abstract contract Bounty is
     mapping(bytes32 => uint256) public tokenId;
     mapping(bytes32 => uint256) public expiration;
     mapping(bytes32 => bool) public isNFT;
-    mapping(bytes32 => address) public submissionIdToAddress;
+    mapping(uint256 => address) public submissionIdToAddress;
     address[] public submitters;
 
     // Deposit Count and IDs
@@ -85,9 +85,10 @@ abstract contract Bounty is
         virtual
         returns (bool success);
 
-    function selectWinner(address, bytes32) external virtual returns (address);
-
-    function refundDeposit(address, bytes32) external virtual returns (bool);
+    function submitMethod(string calldata _bountyId, address _submitter)
+        external
+        virtual
+        returns (uint256 submissionId);
 
     function claim(address _payoutAddress, bytes32 depositId)
         external
@@ -98,6 +99,11 @@ abstract contract Bounty is
         external
         virtual
         returns (bool success);
+
+    function selectWinner(address _funder, bytes32 _submittalId)
+        external
+        virtual
+        returns (address _payoutAddress);
 
     // Transfer Helpers
     function _receiveERC20(
@@ -184,6 +190,10 @@ abstract contract Bounty is
 
     function getDeposits() public view returns (bytes32[] memory) {
         return deposits;
+    }
+
+    function getSubmitters() public view returns (address[] memory) {
+        return submitters;
     }
 
     // Revert any attempts to send unknown calldata

@@ -170,7 +170,7 @@ abstract contract Bounty is
         view
         returns (bytes32)
     {
-        return keccak256(abi.encode(_sender, submissions.length));
+        return keccak256(abi.encode(_sender, submitters.length));
     }
 
     function getERC20Balance(address _tokenAddress)

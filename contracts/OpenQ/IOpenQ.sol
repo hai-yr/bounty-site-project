@@ -65,9 +65,9 @@ interface IOpenQ {
     event WinnerSelected(
         address _payoutAddress,
         address _funder,
-        bounty.bountyId(),
-        bountyAddress,
-        block.timestamp
+        string bountyId,
+        address indexed bountyAddress,
+        uint256 selectionTime
 
     );
 

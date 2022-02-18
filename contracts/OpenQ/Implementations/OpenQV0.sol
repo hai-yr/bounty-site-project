@@ -122,26 +122,30 @@ contract OpenQV0 is
         return true;
     }
 
-    function submitMethod(address _submitter)
+    function submitMethod(string _bountyId, address _submitter)
         external
-        nonReetrant
+        nonReentrant
         returns (bytes32)
     {
         require(bountyIsOpen(_bountyId) == true, 'SUBMISSIONS_CLOSED_BOUNTY');
+        address bountyAddress = bountyIdToAddress(_bountyId);
+        Bounty bounty = Bounty(payable(bountyAddress));
         bytes32 submissionId = _generateSubmissionId(_submitter);
-        submissionIdToAddress[submissionId] = _submitter;
+        bounty.submissionIdToAddress[submissionId] = _submitter;
         submissions.push(msg.sender);
         return submissionId;
     }
 
-    function selectWinner(address _funder, bytes32 submissionId) external nonReentrant returns(address) {
+    function selectWinner(address _funder, bytes32 submissionId, string calldata _bountyId) external nonReentrant returns(address) {
         require(this.status() == BountyStatus.OPEN, 'CLAIMING_CLOSED_BOUNTY');
         require(!refunded[depositId], 'CLAIMING_REFUNDED_DEPOSIT');
         require(!claimed[depositId], 'CLAIMING_CLAIMED_DEPOSIT');
-        require(msg.sender == address _funder);
-        address _payoutAddress = submissionIdToAddress[submissionId];
+        require(msg.sender == _funder);
+        address bountyAddress = bountyIdToAddress(_bountyId);
+        Bounty bounty = Bounty(payable(bountyAddress));
+        address _payoutAddress = bounty.submissionIdToAddress[submissionId];
         return _payoutAddress;
-        emit WinnerSelected(address _payoutAddress, address _funder, bounty.bountyId(), bountyAddress, block.timestamp);
+        emit WinnerSelected(_payoutAddress, _funder, bounty.bountyId(), bountyAddress, block.timestamp);
     }
 
     function claimBounty(string calldata _bountyId, address closer)

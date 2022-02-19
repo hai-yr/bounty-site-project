@@ -132,7 +132,7 @@ contract OpenQV0 is
         address bountyAddress = bountyIdToAddress(_bountyId);
         Bounty bounty = Bounty(payable(bountyAddress));
         address[] memory _submitters = bounty.getSubmitters();
-
+        bytes32 submissionId = bounty._generateSubmissionId(msg.sender);
         bounty.submissionIdToAddress[submissionId] = msg.sender;
         _submitters.push(msg.sender);
         bounty.submitters = _submitters;

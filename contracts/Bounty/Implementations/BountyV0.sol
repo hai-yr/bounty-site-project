@@ -128,7 +128,7 @@ contract BountyV0 is Bounty {
         return _submittalId;
     }
 
-    function select(bytes32 _submittalId)
+    function select(bytes32 submissionId, string calldata _bountyId)
         external
         override
         onlyOpenQ
@@ -137,7 +137,8 @@ contract BountyV0 is Bounty {
     {
         require(this.status() == BountyStatus.OPEN, 'JUDGING_CLOSED_BOUNTY');
         require(msg.sender == issuer);
-        address _payoutAddress = submissionIdToAddress[_submittalId];
+
+        address _payoutAddress = submissionIdToAddress[submissionId];
         return _payoutAddress;
     }
 

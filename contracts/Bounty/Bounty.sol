@@ -98,7 +98,7 @@ abstract contract Bounty is
         returns (bool success);
 
     // is bountyId needed
-    function select(string calldata _bountyId)
+    function select(bytes32 submissionId, string calldata _bountyId)
         external
         virtual
         returns (address _payoutAddress);

@@ -85,10 +85,7 @@ abstract contract Bounty is
         virtual
         returns (bool success);
 
-    function submitMethod(string calldata _bountyId, address _submitter)
-        external
-        virtual
-        returns (bytes32 submissionId);
+    function submit() external virtual returns (bytes32 submissionId);
 
     function claim(address _payoutAddress, bytes32 depositId)
         external
@@ -100,7 +97,8 @@ abstract contract Bounty is
         virtual
         returns (bool success);
 
-    function selectWinner(address _funder, bytes32 _submittalId)
+    // is bountyId needed
+    function select(string calldata _bountyId)
         external
         virtual
         returns (address _payoutAddress);

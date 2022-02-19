@@ -122,7 +122,8 @@ contract OpenQV0 is
         return true;
     }
 
-    function submitMethod(string calldata _bountyId, address _submitter)
+    //
+    function submitMethod(string calldata _bountyId)
         external
         nonReentrant
         returns (bytes32)
@@ -130,27 +131,28 @@ contract OpenQV0 is
         require(bountyIsOpen(_bountyId) == true, 'SUBMISSIONS_CLOSED');
         address bountyAddress = bountyIdToAddress(_bountyId);
         Bounty bounty = Bounty(payable(bountyAddress));
-        address[] submitters = bounty.getSubmitters();
-        submitters.push(msg.sender);
-        //bounty.submissionIdToAddress[submissionId] = _submitter;
+        address[] memory _submitters = bounty.getSubmitters();
 
+        bounty.submissionIdToAddress[submissionId] = msg.sender;
+        _submitters.push(msg.sender);
+        bounty.submitters = _submitters;
         return submissionId;
     }
 
-    function selectWinner(
-        address _funder,
-        bytes32 submissionId,
-        string calldata _bountyId
-    ) external nonReentrant returns (address) {
+    function selectWinner(bytes32 submissionId, string calldata _bountyId)
+        external
+        nonReentrant
+        returns (address)
+    {
         require(bountyIsOpen(_bountyId) == true, 'JUDGING_CLOSED_BOUNTY');
-        require(msg.sender == _funder);
         address bountyAddress = bountyIdToAddress(_bountyId);
         Bounty bounty = Bounty(payable(bountyAddress));
+        require(msg.sender == bounty.issuer);
         address _payoutAddress = bounty.submissionIdToAddress[submissionId];
         return _payoutAddress;
         emit WinnerSelected(
             _payoutAddress,
-            _funder,
+            bounty.issuer,
             bounty.bountyId(),
             bountyAddress,
             block.timestamp
@@ -196,7 +198,7 @@ contract OpenQV0 is
         );
     }
 
-    function refundDeposit(address _bountyAddress, bytes32 _depositId)
+    function refundDeposit(bytes32 _depositId, address _bountyAddress)
         external
         nonReentrant
         returns (bool success)

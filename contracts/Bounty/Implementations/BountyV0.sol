@@ -114,21 +114,21 @@ contract BountyV0 is Bounty {
         return true;
     }
 
-    function submitMethod(address _submitter)
+    function submit()
         external
         override
-        nonReentrant
         onlyOpenQ
+        nonReentrant
         returns (bytes32)
     {
-        require(this.status() == BountyStatus.OPEN, 'SUBMISSIONS_CLOSED');
-        bytes32 submissionId = _generateSubmissionId(_submitter);
-        submissionIdToAddress[submissionId] = _submitter;
+        require(this.status() == BountyStatus.OPEN, 'CLOSED_BOUNTY');
+        bytes32 _submittalId = _generateSubmissionId(msg.sender);
+        submissionIdToAddress[_submittalId] = msg.sender;
         submitters.push(msg.sender);
-        return submissionId;
+        return _submittalId;
     }
 
-    function selectWinner(address _funder, bytes32 _submittalId)
+    function select(bytes32 _submittalId)
         external
         override
         onlyOpenQ
@@ -136,8 +136,8 @@ contract BountyV0 is Bounty {
         returns (address)
     {
         require(this.status() == BountyStatus.OPEN, 'JUDGING_CLOSED_BOUNTY');
-        require(msg.sender == _funder);
-        address _payoutAddress = submitters[_submittalId];
+        require(msg.sender == issuer);
+        address _payoutAddress = submissionIdToAddress[_submittalId];
         return _payoutAddress;
     }
 
@@ -151,6 +151,7 @@ contract BountyV0 is Bounty {
         require(this.status() == BountyStatus.OPEN, 'CLAIMING_CLOSED_BOUNTY');
         require(!refunded[depositId], 'CLAIMING_REFUNDED_DEPOSIT');
         require(!claimed[depositId], 'CLAIMING_CLAIMED_DEPOSIT');
+        // require valid claim that was accepted
 
         if (tokenAddress[depositId] == address(0)) {
             _transferProtocolToken(_payoutAddress, volume[depositId]);

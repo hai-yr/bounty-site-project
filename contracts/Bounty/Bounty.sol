@@ -170,7 +170,7 @@ abstract contract Bounty is
     }
 
     function _generateSubmissionId(address _sender)
-        internal
+        external
         view
         returns (bytes32)
     {

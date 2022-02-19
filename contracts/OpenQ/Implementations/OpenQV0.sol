@@ -131,11 +131,9 @@ contract OpenQV0 is
         require(bountyIsOpen(_bountyId) == true, 'SUBMISSIONS_CLOSED');
         address bountyAddress = bountyIdToAddress(_bountyId);
         Bounty bounty = Bounty(payable(bountyAddress));
-        address[] memory _submitters = bounty.getSubmitters();
         bytes32 submissionId = bounty._generateSubmissionId(msg.sender);
-        bounty.submissionIdToAddress[submissionId] = msg.sender;
-        _submitters.push(msg.sender);
-        bounty.submitters = _submitters;
+        bounty.setSubmittal(submissionId, msg.sender);
+        bounty.addSubmitter(msg.sender);
         return submissionId;
     }
 
@@ -147,12 +145,12 @@ contract OpenQV0 is
         require(bountyIsOpen(_bountyId) == true, 'JUDGING_CLOSED_BOUNTY');
         address bountyAddress = bountyIdToAddress(_bountyId);
         Bounty bounty = Bounty(payable(bountyAddress));
-        require(msg.sender == bounty.issuer);
-        address _payoutAddress = bounty.submissionIdToAddress[submissionId];
+        require(msg.sender == bounty.issuer());
+        address _payoutAddress = bounty.submissionIdToAddress(submissionId);
         return _payoutAddress;
         emit WinnerSelected(
             _payoutAddress,
-            bounty.issuer,
+            bounty.issuer(),
             bounty.bountyId(),
             bountyAddress,
             block.timestamp

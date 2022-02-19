@@ -97,7 +97,14 @@ abstract contract Bounty is
         virtual
         returns (bool success);
 
-    // is bountyId needed
+    // require check senders address
+    function setSubmittal(bytes32 submittalId, address submitter)
+        external
+        virtual
+    {
+        submissionIdToAddress[submittalId] = submitter;
+    }
+
     function select(bytes32 submissionId, string calldata _bountyId)
         external
         virtual
@@ -170,7 +177,7 @@ abstract contract Bounty is
     }
 
     function _generateSubmissionId(address _sender)
-        external
+        public
         view
         returns (bytes32)
     {
@@ -188,6 +195,11 @@ abstract contract Bounty is
 
     function getDeposits() public view returns (bytes32[] memory) {
         return deposits;
+    }
+
+    // changing the state
+    function addSubmitter(address submitter) external {
+        submitters.push(submitter);
     }
 
     function getSubmitters() public view returns (address[] memory) {

@@ -134,8 +134,8 @@ contract OpenQV0 is
         bytes32 submissionId = bounty._generateSubmissionId(msg.sender);
         bounty.setSubmittal(submissionId, msg.sender);
         bounty.addSubmitter(msg.sender);
-        return submissionId;
         emit SubmissionReceived(submissionId);
+        return submissionId;
     }
 
     function selectWinner(bytes32 submissionId, string calldata _bountyId)
@@ -149,6 +149,7 @@ contract OpenQV0 is
         require(msg.sender == bounty.issuer(), 'NOT_BOUNTY_ISSUER');
         address _payoutAddress = bounty.submissionIdToAddress(submissionId);
         bounty.makeSelection();
+        bounty.markWinner(_payoutAddress);
         emit WinnerSelected(
             _payoutAddress,
             bounty.issuer(),
@@ -159,11 +160,13 @@ contract OpenQV0 is
         return _payoutAddress;
     }
 
-    function claimBounty(string calldata _bountyId, address closer)
+    function claimBounty(string calldata _bountyId)
         external
         nonReentrant
     {
         require(bountyIsOpen(_bountyId) == true, 'CLAIMING_CLOSED_BOUNTY');
+
+        require(claimerIsWinner(_bountyId), 'NON_WINNER_CLAIMING');
 
         address bountyAddress = bountyIdToAddress(_bountyId);
         Bounty bounty = Bounty(payable(bountyAddress));
@@ -242,6 +245,13 @@ contract OpenQV0 is
         Bounty bounty = Bounty(payable(bountyAddress));
         bool isOpen = bounty.status() == Bounty.BountyStatus.OPEN;
         return isOpen;
+    }
+
+    function claimerIsWinner(string memory _id) public view returns (bool) {
+        address bountyAddress = bountyIdToAddress(_id);
+        Bounty bounty = Bounty(payable(bountyAddress));
+        bool isWinner = bounty.winner() == msg.sender;
+        return isWinner;
     }
 
     function winnerSelected(string memory _id) public view returns (bool) {

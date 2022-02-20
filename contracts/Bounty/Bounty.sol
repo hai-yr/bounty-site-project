@@ -33,6 +33,7 @@ abstract contract Bounty is
     address public issuer;
     string public organization;
     address public closer;
+    address public winner;
     BountyStatus public status;
 
     // Deposit Data - A Deconstructed Deposit Struct
@@ -113,6 +114,8 @@ abstract contract Bounty is
         returns (address _payoutAddress);
 
     function makeSelection() external virtual returns (bool success);
+
+    function markWinner(address payoutAddress) external virtual returns (bool success);
 
     // Transfer Helpers
     function _receiveERC20(

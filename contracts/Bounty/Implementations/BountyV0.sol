@@ -196,6 +196,17 @@ contract BountyV0 is Bounty {
         return true;
     }
 
+    function markWinner(address _winnerAddress)
+        external
+        override
+        onlyOpenQ
+        nonReentrant
+        returns (bool success)
+    {
+        winner = msg.sender;
+        return true;
+    }
+
     function close(address _payoutAddress)
         external
         override

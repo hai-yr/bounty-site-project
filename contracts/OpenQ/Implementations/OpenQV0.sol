@@ -154,7 +154,7 @@ contract OpenQV0 is
             bounty.issuer(),
             bounty.bountyId(),
             bountyAddress,
-            bounty.bountyClosedTime()
+            bounty.bountySelectedTime()
         );
         return _payoutAddress;
     }

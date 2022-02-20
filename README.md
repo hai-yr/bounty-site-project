@@ -1,6 +1,10 @@
-# OpenQ Smart Contracts 
+# Smart Contracts 
 
-Welcome! By luck or misfortune you've found yourself in the OpenQ on-chain universe. Let's get you started.
+Welcome! This is the smart contracts repo for the Meme bounty platform.
+
+# Web App
+
+The repository for the web app can be found at https://github.com/kylekaplan/open-work/tree/eth-denver
 
 ## Core User Actions
 
@@ -31,8 +35,6 @@ Refunding a bounty is allowed after an escrow period has been reached, as reflec
 ### Claim Bounty
 
 Claiming a bounty triggers an ERC-20 `transfer` of the funds deposited on that bounty contract address to to the `payoutAddress` passed to claim.
-
-The `claimBounty` method is only callable by the OpenQ Oracle.
 
 ### Closed Bounty
 

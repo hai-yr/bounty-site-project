@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.11;
 
+import "hardhat/console.sol";
+
 // Third Party
 import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol';
@@ -132,10 +134,14 @@ contract OpenQV0 is
         address bountyAddress = bountyIdToAddress(_bountyId);
         Bounty bounty = Bounty(payable(bountyAddress));
         bytes32 submissionId = bounty._generateSubmissionId(msg.sender);
+        console.log('submissionId', uint(submissionId));
+        string memory myString = "randomString";
         bounty.setSubmittal(submissionId, msg.sender);
         bounty.addSubmitter(msg.sender);
+        emit SubmissionReceived(
+            submissionId
+        );
         return submissionId;
-        emit SubmissionReceived(submissionId);
     }
 
     function selectWinner(bytes32 submissionId, string calldata _bountyId)

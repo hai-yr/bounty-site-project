@@ -122,7 +122,6 @@ contract OpenQV0 is
         return true;
     }
 
-    //
     function submitMethod(string calldata _bountyId)
         external
         nonReentrant
@@ -159,27 +158,25 @@ contract OpenQV0 is
         return _payoutAddress;
     }
 
-    function claimBounty(string calldata _bountyId, address closer)
-        external
-        nonReentrant
-    {
+    function claimBounty(string calldata _bountyId) external nonReentrant {
         require(bountyIsOpen(_bountyId) == true, 'CLAIMING_CLOSED_BOUNTY');
 
         address bountyAddress = bountyIdToAddress(_bountyId);
         Bounty bounty = Bounty(payable(bountyAddress));
 
+        require(msg.sender == bounty.winner());
         for (uint256 i = 0; i < bounty.getDeposits().length; i++) {
             bytes32 depositId = bounty.deposits(i);
 
             if (!bounty.refunded(depositId)) {
-                bounty.claim(closer, depositId);
+                bounty.claim(msg.sender, depositId);
 
                 emit DepositClaimed(
                     depositId,
                     bounty.bountyId(),
                     bountyAddress,
                     bounty.organization(),
-                    closer,
+                    bounty.closer(),
                     block.timestamp
                 );
             } else {
@@ -187,13 +184,13 @@ contract OpenQV0 is
             }
         }
 
-        bounty.close(closer);
+        bounty.close(msg.sender);
 
         emit BountyClosed(
             _bountyId,
             bountyAddress,
             bounty.organization(),
-            closer,
+            msg.sender,
             block.timestamp
         );
     }

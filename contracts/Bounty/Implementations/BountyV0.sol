@@ -128,10 +128,10 @@ contract BountyV0 is Bounty {
         return _submittalId;
     }
 
+    // temporarily removed onlyOpenQ
     function select(bytes32 submissionId, string calldata _bountyId)
         external
         override
-        onlyOpenQ
         nonReentrant
         returns (address)
     {
@@ -139,6 +139,7 @@ contract BountyV0 is Bounty {
         require(msg.sender == issuer);
 
         address _payoutAddress = submissionIdToAddress[submissionId];
+        winner = _payoutAddress;
         status = BountyStatus.SELECTED;
         return _payoutAddress;
     }
@@ -150,6 +151,7 @@ contract BountyV0 is Bounty {
         nonReentrant
         returns (bool success)
     {
+        require(msg.sender == winner);
         require(
             this.status() == BountyStatus.SELECTED,
             'BOUNTY_CLOSED_OR_NOT_AWARDED'
@@ -191,6 +193,7 @@ contract BountyV0 is Bounty {
             this.status() == BountyStatus.OPEN,
             'JUDGING_SELECTED_OR_CLOSED_BOUNTY'
         );
+
         status = BountyStatus.SELECTED;
         bountySelectedTime = block.timestamp;
         return true;

@@ -90,7 +90,7 @@ interface IOpenQ {
         uint256
     ) external payable returns (bool success);
 
-    function claimBounty(string calldata, address) external;
+    function claimBounty(string calldata) external;
 
     function submitMethod(string calldata _bountyId) external returns (bytes32);
 

@@ -31,6 +31,7 @@ abstract contract Bounty is
     uint256 public bountySelectedTime;
     uint256 public bountyClosedTime;
     address public issuer;
+    address public winner;
     string public organization;
     address public closer;
     BountyStatus public status;
@@ -210,6 +211,10 @@ abstract contract Bounty is
 
     function getSubmitters() public view returns (address[] memory) {
         return submitters;
+    }
+
+    function viewWinner() public view returns (address) {
+        return winner;
     }
 
     // Revert any attempts to send unknown calldata

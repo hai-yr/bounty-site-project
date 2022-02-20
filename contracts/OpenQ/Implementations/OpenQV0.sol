@@ -135,7 +135,7 @@ contract OpenQV0 is
         bounty.setSubmittal(submissionId, msg.sender);
         bounty.addSubmitter(msg.sender);
         return submissionId;
-        emit submissionReceived(submissionId);
+        emit SubmissionReceived(submissionId);
     }
 
     function selectWinner(bytes32 submissionId, string calldata _bountyId)

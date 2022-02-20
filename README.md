@@ -1,10 +1,10 @@
-# OpenQ Smart Contracts 
+# Meme Bounty Platform Smart Contracts 
 
-Welcome! By luck or misfortune you've found yourself in the OpenQ on-chain universe. Let's get you started.
+Welcome! To the Meme on-chain universe. This repo contains the smart contracts used in the platform's deployment. The web app is here: https://github.com/kylekaplan/open-work/tree/eth-denver
 
 ## Core User Actions
 
-OpenQ revolves around five core user actions.
+The platform revolves around five core user actions.
 
 Each action corresponds to one Solidity Event. These events are declared in [IOpenQ](https://github.com/OpenQDev/OpenQ-Contracts/blob/main/contracts/OpenQ/IOpenQ.sol). 
 
@@ -32,8 +32,6 @@ Refunding a bounty is allowed after an escrow period has been reached, as reflec
 
 Claiming a bounty triggers an ERC-20 `transfer` of the funds deposited on that bounty contract address to to the `payoutAddress` passed to claim.
 
-The `claimBounty` method is only callable by the OpenQ Oracle.
-
 ### Closed Bounty
 
 Closing a bounty simply sets bounty status to `CLOSED` and the `bountyClosedTime` to `block.timestamp`.
@@ -52,15 +50,9 @@ We will cover each of those five contracts below.
 
 ### [BountyV0.sol](https://github.com/OpenQDev/OpenQ-Contracts/blob/main/contracts/Bounty/Implementations/BountyV0.sol)
 
-Each BountyV0 contract represent one bounty linked to one GitHub Issue. 
+Each BountyV0 contract represent one bounty. 
 
 The `bountyId` is the [Global Node Id](https://docs.github.com/en/graphql/guides/using-global-node-ids) of the issue linked to that bounty.
-
-The one-to-one link between a bounty, a GitHub issue and a smart contract enables OpenQ to offboard much of the deposit accounting to the tried and true ERC-20 standard.
-
-Any exploit against a BountyV0 contract could acquire at most all of the deposits on that one issue. The core contract OpenQV0 holds no deposits.
-
-This flexiibility allows us to accept any ERC-20, and in the future ERC-721, as bounty.
 
 Since only the [runtime bytecode](https://medium.com/authereum/bytecode-and-init-code-and-runtime-code-oh-my-7bcd89065904) is available, which does not include the constructor the BountyV0 implementation only has an [initialize](https://github.com/OpenQDev/OpenQ-Contracts/blob/main/contracts/Bounty/Bounty.sol#L50) method.
 

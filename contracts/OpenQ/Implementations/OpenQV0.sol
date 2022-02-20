@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.11;
 
-import "hardhat/console.sol";
-
 // Third Party
 import '@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol';
 import '@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol';
@@ -134,14 +132,10 @@ contract OpenQV0 is
         address bountyAddress = bountyIdToAddress(_bountyId);
         Bounty bounty = Bounty(payable(bountyAddress));
         bytes32 submissionId = bounty._generateSubmissionId(msg.sender);
-        console.log('submissionId', uint(submissionId));
-        string memory myString = "randomString";
         bounty.setSubmittal(submissionId, msg.sender);
         bounty.addSubmitter(msg.sender);
-        emit SubmissionReceived(
-            submissionId
-        );
         return submissionId;
+        emit SubmissionReceived(submissionId);
     }
 
     function selectWinner(bytes32 submissionId, string calldata _bountyId)
@@ -149,19 +143,20 @@ contract OpenQV0 is
         nonReentrant
         returns (address)
     {
-        require(bountyIsOpen(_bountyId) == true, 'JUDGING_CLOSED_BOUNTY');
+        require(bountyIsOpen(_bountyId), 'JUDGING_CLOSED_BOUNTY');
         address bountyAddress = bountyIdToAddress(_bountyId);
         Bounty bounty = Bounty(payable(bountyAddress));
-        require(msg.sender == bounty.issuer());
+        require(msg.sender == bounty.issuer(), 'NOT_BOUNTY_ISSUER');
         address _payoutAddress = bounty.submissionIdToAddress(submissionId);
-        return _payoutAddress;
+        bounty.makeSelection();
         emit WinnerSelected(
             _payoutAddress,
             bounty.issuer(),
             bounty.bountyId(),
             bountyAddress,
-            block.timestamp
+            bounty.bountyClosedTime()
         );
+        return _payoutAddress;
     }
 
     function claimBounty(string calldata _bountyId, address closer)
@@ -247,6 +242,13 @@ contract OpenQV0 is
         Bounty bounty = Bounty(payable(bountyAddress));
         bool isOpen = bounty.status() == Bounty.BountyStatus.OPEN;
         return isOpen;
+    }
+
+    function winnerSelected(string memory _id) public view returns (bool) {
+        address bountyAddress = bountyIdToAddress(_id);
+        Bounty bounty = Bounty(payable(bountyAddress));
+        bool isSelected = bounty.status() == Bounty.BountyStatus.SELECTED;
+        return isSelected;
     }
 
     function bountyIdToAddress(string memory _id)

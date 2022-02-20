@@ -139,6 +139,7 @@ contract BountyV0 is Bounty {
         require(msg.sender == issuer);
 
         address _payoutAddress = submissionIdToAddress[submissionId];
+        status = BountyStatus.SELECTED;
         return _payoutAddress;
     }
 
@@ -149,7 +150,10 @@ contract BountyV0 is Bounty {
         nonReentrant
         returns (bool success)
     {
-        require(this.status() == BountyStatus.OPEN, 'CLAIMING_CLOSED_BOUNTY');
+        require(
+            this.status() == BountyStatus.SELECTED,
+            'BOUNTY_CLOSED_OR_NOT_AWARDED'
+        );
         require(!refunded[depositId], 'CLAIMING_REFUNDED_DEPOSIT');
         require(!claimed[depositId], 'CLAIMING_CLAIMED_DEPOSIT');
         // require valid claim that was accepted
@@ -176,13 +180,33 @@ contract BountyV0 is Bounty {
         return true;
     }
 
+    function makeSelection()
+        external
+        override
+        onlyOpenQ
+        nonReentrant
+        returns (bool success)
+    {
+        require(
+            this.status() == BountyStatus.OPEN,
+            'JUDGING_SELECTED_OR_CLOSED_BOUNTY'
+        );
+        status = BountyStatus.SELECTED;
+        bountySelectedTime = block.timestamp;
+        return true;
+    }
+
     function close(address _payoutAddress)
         external
         override
         onlyOpenQ
         returns (bool success)
     {
-        require(this.status() == BountyStatus.OPEN, 'CLOSING_CLOSED_BOUNTY');
+        require(
+            this.status() == BountyStatus.OPEN ||
+                this.status() == BountyStatus.SELECTED,
+            'CLOSING_CLOSED_BOUNTY'
+        );
         status = BountyStatus.CLOSED;
         closer = _payoutAddress;
         bountyClosedTime = block.timestamp;

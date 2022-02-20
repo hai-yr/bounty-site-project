@@ -62,9 +62,7 @@ interface IOpenQ {
         uint256 payoutTime
     );
 
-    event SubmissionReceived(
-        bytes32 submissionId
-    );
+    event SubmissionReceived(bytes32 submissionId);
 
     event WinnerSelected(
         address _payoutAddress,
@@ -101,4 +99,6 @@ interface IOpenQ {
     function refundDeposit(bytes32, address) external returns (bool);
 
     function bountyIsOpen(string memory) external view returns (bool);
+
+    function winnerSelected(string memory) external view returns (bool);
 }

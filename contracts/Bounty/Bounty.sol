@@ -18,6 +18,7 @@ abstract contract Bounty is
 
     enum BountyStatus {
         OPEN,
+        SELECTED,
         CLOSED
     }
 
@@ -27,6 +28,7 @@ abstract contract Bounty is
     // Bounty Metadata
     string public bountyId;
     uint256 public bountyCreatedTime;
+    uint256 public bountySelectedTime;
     uint256 public bountyClosedTime;
     address public issuer;
     string public organization;
@@ -109,6 +111,8 @@ abstract contract Bounty is
         external
         virtual
         returns (address _payoutAddress);
+
+    function makeSelection() external virtual returns (bool success);
 
     // Transfer Helpers
     function _receiveERC20(

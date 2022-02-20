@@ -181,7 +181,9 @@ abstract contract Bounty is
         view
         returns (bytes32)
     {
-        return keccak256(abi.encode(_sender, submitters.length));
+        // require (needs to be accessed by openQ and bountyV0)
+        return
+            keccak256(abi.encode(_sender, submitters.length, block.timestamp)); // add block.timestamp ?
     }
 
     function getERC20Balance(address _tokenAddress)

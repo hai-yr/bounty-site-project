@@ -62,6 +62,8 @@ interface IOpenQ {
         uint256 payoutTime
     );
 
+    event submissionReceived(bytes32 submissionId);
+
     event WinnerSelected(
         address _payoutAddress,
         address _funder,

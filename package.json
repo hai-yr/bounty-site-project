@@ -25,6 +25,9 @@
 		"deploy-contracts:polygon": "hardhat run --network polygon deploy/deploy_contracts.js",
 		"deploy-bounties:polygon": "hardhat run --network polygon deploy/deploy_bounties.js",
 		"fund-bounties:polygon": "hardhat run --network polygon deploy/fund_bounties.js",
+		"deploy-contracts:metisStardust": "hardhat run --network metisStardust deploy/deploy_contracts.js",
+		"deploy-bounties:metisStardust": "hardhat run --network metisStardust deploy/deploy_bounties.js",
+		"fund-bounties:metisStardust": "hardhat run --network metisStardust deploy/fund_bounties.js",
 		"deploy-contracts:localhost": "hardhat run --network localhost deploy/deploy_contracts.js",
 		"deploy-bounties:localhost": "hardhat run --network localhost deploy/deploy_bounties.js",
 		"fund-bounties:localhost": "hardhat run --network localhost deploy/fund_bounties.js"

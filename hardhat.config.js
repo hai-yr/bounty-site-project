@@ -31,6 +31,18 @@ module.exports = (function () {
 				chainId: chainIdInt,
 				gas: 9999999
 			},
+			metisStardust: {
+				url: process.env.PROVIDER_URL,
+				accounts: [process.env.CLIENT, process.env.CONTRIBUTOR],
+				chainId: chainIdInt,
+				gas: 9999999
+			},
+			metis: {
+				url: process.env.PROVIDER_URL,
+				accounts: [process.env.CLIENT, process.env.CONTRIBUTOR],
+				chainId: chainIdInt,
+				gas: 9999999
+			},
 		},
 		etherscan: {
 			apiKey: process.env.POLYGON_SCAN_API_KEY

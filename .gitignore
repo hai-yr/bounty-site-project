@@ -13,6 +13,7 @@ nohup.out
 **/.deps
 .env
 .env.mumbai
+.env.metisStardust
 .env.polygon
 .env.docker
 .DS_Store

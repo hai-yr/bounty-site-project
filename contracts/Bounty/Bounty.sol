@@ -32,6 +32,7 @@ abstract contract Bounty is
     string public organization;
     address public closer;
     BountyStatus public status;
+    bytes32 public winningSubmissionId;
 
     // Deposit Data - A Deconstructed Deposit Struct
     mapping(bytes32 => address) public funder;
@@ -103,6 +104,13 @@ abstract contract Bounty is
         virtual
     {
         submissionIdToAddress[submittalId] = submitter;
+    }
+
+    function setWinningSubmissionId(bytes32 submissionId)
+        external
+        virtual
+    {
+        winningSubmissionId = submissionId;
     }
 
     function select(bytes32 submissionId, string calldata _bountyId)
@@ -206,6 +214,10 @@ abstract contract Bounty is
 
     function getSubmitters() public view returns (address[] memory) {
         return submitters;
+    }
+
+    function getWinningAddress() public view returns (address) {
+        return submissionIdToAddress[winningSubmissionId];
     }
 
     // Revert any attempts to send unknown calldata

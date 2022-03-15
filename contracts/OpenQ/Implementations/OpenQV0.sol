@@ -154,6 +154,7 @@ contract OpenQV0 is
         Bounty bounty = Bounty(payable(bountyAddress));
         require(msg.sender == bounty.issuer());
         address _payoutAddress = bounty.submissionIdToAddress(submissionId);
+        bounty.setWinningSubmissionId(submissionId);
         return _payoutAddress;
         emit WinnerSelected(
             _payoutAddress,
@@ -172,6 +173,8 @@ contract OpenQV0 is
 
         address bountyAddress = bountyIdToAddress(_bountyId);
         Bounty bounty = Bounty(payable(bountyAddress));
+
+        require(closer == bounty.getWinningAddress(), 'INVALID_CLOSER');
 
         for (uint256 i = 0; i < bounty.getDeposits().length; i++) {
             bytes32 depositId = bounty.deposits(i);
@@ -255,6 +258,15 @@ contract OpenQV0 is
         returns (address)
     {
         return bountyFactory.predictDeterministicAddress(_id);
+    }
+
+    function getWinningSubmissionId(address bountyAddress)
+        public
+        view
+        returns (bytes32)
+    {
+        Bounty bounty = Bounty(payable(bountyAddress));
+        return bounty.winningSubmissionId();
     }
 
     function bountyAddressToBountyId(address bountyAddress)
